@@ -1,4 +1,5 @@
-import { Box, Container, Heading, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Container, Heading, SimpleGrid, Text, Input } from "@chakra-ui/react";
+import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
 const products = [
@@ -11,13 +12,31 @@ const products = [
 ];
 
 const Products = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  const handleSearch = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+    setFilteredProducts(
+      products.filter((product) =>
+        product.name.toLowerCase().includes(term)
+      )
+    );
+  };
   return (
     <Container maxW="container.xl" py={8}>
       <Heading as="h1" size="2xl" mb={8}>
         Products
       </Heading>
+      <Input
+        placeholder="Search for products"
+        value={searchTerm}
+        onChange={handleSearch}
+        mb={8}
+      />
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <Box key={product.id} p={5} shadow="md" borderWidth="1px">
             <Heading fontSize="xl">{product.name}</Heading>
             <Text mt={4}>{product.price}</Text>
